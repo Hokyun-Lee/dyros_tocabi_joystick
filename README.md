@@ -35,6 +35,9 @@ rosrun joy joy_node
 rostopic echo joy
 ```
 
+![xbox 360 wire joy value key](https://user-images.githubusercontent.com/68094299/87122977-d7e77100-c2c0-11ea-9015-16e452b2c174.png)
+
+
 
 ## How do I run dyros_tocabi_joystick ? ##
 * Launch DaegyuLim's Custom-Controller (https://github.com/DaegyuLim/Custom-Controller)
