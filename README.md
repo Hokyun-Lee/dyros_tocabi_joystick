@@ -4,9 +4,7 @@
 * using Microsoft Xbox 360 Wired Controller for Linux
 (http://wiki.ros.org/joy#Microsoft_Xbox_360_Wired_Controller_for_Linux)
 * in Ubuntu 16.04.6 LTS
-
 <br></br>
-
 ## Configuring Joystick ##
 1. 조이스틱 패키지 설치
 ```sh
@@ -37,9 +35,7 @@ rostopic echo joy
 ```
 
 ![xbox 360 wire joy value key](https://user-images.githubusercontent.com/68094299/87122977-d7e77100-c2c0-11ea-9015-16e452b2c174.png)
-
 <br></br>
-
 ## How do I run dyros_tocabi_joystick ? ##
 * Launch DaegyuLim's Custom-Controller (https://github.com/DaegyuLim/Custom-Controller)
 * Enable mujoco
@@ -53,9 +49,7 @@ rosrun dyros_tocabi_joystick dyros_tocabi_joystick
 rosrun joy joy_node
 ```
   also, you can check topic with `rostopic list` and `rostopic echo /tocabi/...`
-  
   <br></br>
-  
   ## Todo list ##
   1. ~~Joystick setup.~~ (2020/07/08)
   2. ~~Generate dyros_tocabi_joystick Node that publish WalkingCommand to DaegyuLim's Custom-Controller.~~ (2020/07/09)
