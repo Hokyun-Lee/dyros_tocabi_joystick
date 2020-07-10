@@ -5,6 +5,7 @@
 (http://wiki.ros.org/joy#Microsoft_Xbox_360_Wired_Controller_for_Linux)
 * in Ubuntu 16.04.6 LTS
 
+
 ## Configuring Joystick ##
 1. 조이스틱 패키지 설치
 ```sh
@@ -16,20 +17,24 @@ sudo apt-get install ros-kinetic-joy
 ```sh
 ls /dev/input/
 ```
+
 * listing the permissions of the joystick.(in my case, js0)
 ```sh
 ls -1 /dev/input/jsX
 sudo chmod a+rw /dev/input/jsX
 ```
+
 * Starting the joy Node
 ```sh
 roscore
 rosparam set joy_node/dev "/dev/input/jsX"
 rosrun joy joy_node
 ```
+* Check published topic
 ```sh
 rostopic echo joy
 ```
+
 
 ## How do I run dyros_tocabi_joystick ? ##
 * Launch DaegyuLim's Custom-Controller (https://github.com/DaegyuLim/Custom-Controller)
