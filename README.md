@@ -5,6 +5,7 @@
 (http://wiki.ros.org/joy#Microsoft_Xbox_360_Wired_Controller_for_Linux)
 * in Ubuntu 16.04.6 LTS
 
+<br></br>
 
 ## Configuring Joystick ##
 1. 조이스틱 패키지 설치
@@ -37,7 +38,7 @@ rostopic echo joy
 
 ![xbox 360 wire joy value key](https://user-images.githubusercontent.com/68094299/87122977-d7e77100-c2c0-11ea-9015-16e452b2c174.png)
 
-
+<br></br>
 
 ## How do I run dyros_tocabi_joystick ? ##
 * Launch DaegyuLim's Custom-Controller (https://github.com/DaegyuLim/Custom-Controller)
@@ -53,15 +54,16 @@ rosrun joy joy_node
 ```
   also, you can check topic with `rostopic list` and `rostopic echo /tocabi/...`
   
+  <br></br>
   
   ## Todo list ##
-  1. Joystick setup. (2020/07/08)
-  2. Generate dyros_tocabi_joystick Node that publish WalkingCommand to DaegyuLim's Custom-Controller. (2020/07/09)
-  3. Control walking speed with joystick. (2020/07/10)
+  1. ~~Joystick setup.~~ (2020/07/08)
+  2. ~~Generate dyros_tocabi_joystick Node that publish WalkingCommand to DaegyuLim's Custom-Controller.~~ (2020/07/09)
+  3. ~~Control walking speed with joystick.~~ (2020/07/10)
   4. Make launch file (mujoco + Custum-Controller + tocabi_gui + joy + dyros_tocabi_joystick)
-  5. Processing Joy message
-   - add message(Duration, Angle velocity, Knee Angle, Foot Height) publishing code
-   - convert continuous value into discrete value
-   - if value change, run publish code
-   - implement moving average filter(using with filling array[100])
+  5. Processing Joy message <br>
+&nbsp; _add message(Duration, Angle velocity, Knee Angle, Foot Height) publishing code <br>
+&nbsp; convert continuous value into discrete value <br>
+&nbsp; if value change, run publish code <br>
+&nbsp; implement moving average filter(using with filling array[100])_
   6. etc., more discussion and problem will arise.
