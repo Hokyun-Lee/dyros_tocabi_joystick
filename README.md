@@ -43,4 +43,4 @@ rosrun dyros_tocabi_joystick dyros_tocabi_joystick
 ```ch
 rosrun joy joy_node
 ```
-  also, you can check topic with 'rostopic list  and  rostopic echo /tocabi/...'
+  also, you can check topic with `rostopic list  and  rostopic echo /tocabi/...`
