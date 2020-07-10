@@ -49,3 +49,16 @@ rosrun dyros_tocabi_joystick dyros_tocabi_joystick
 rosrun joy joy_node
 ```
   also, you can check topic with `rostopic list` and `rostopic echo /tocabi/...`
+  
+  
+  ## Todo list ##
+  1. Joystick setup. (2020/07/08)
+  2. Generate dyros_tocabi_joystick Node that publish WalkingCommand to DaegyuLim's Custom-Controller. (2020/07/09)
+  3. Control walking speed with joystick. (2020/07/10)
+  4. Make launch file (mujoco + Custum-Controller + tocabi_gui + joy + dyros_tocabi_joystick)
+  5. Processing Joy message
+   - add message(Duration, Angle velocity, Knee Angle, Foot Height) publishing code
+   - convert continuous value into discrete value
+   - if value change, run publish code
+   - implement moving average filter(using with filling array[100])
+  6. etc., more discussion and problem will arise.
