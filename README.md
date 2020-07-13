@@ -1,4 +1,4 @@
-# dyros_tocabi_joystick
+# DYROS TOCABI JOYSTICK!!
 
 * This is a DYROS Tocabi Humanoid's joystick controller Repository
 * using Microsoft Xbox 360 Wired Controller for Linux
@@ -40,13 +40,17 @@ rostopic echo joy
 * Launch DaegyuLim's Custom-Controller (https://github.com/DaegyuLim/Custom-Controller)
 * Enable mujoco
 * in tocabi_gui > COMMAND > Mode > Select '13.CustomController 4 > Click 'SEND'
-* run Joystick
+~~* run Joystick~~
 ```ch
 rosrun dyros_tocabi_joystick dyros_tocabi_joystick
 ```
-* run Joy Node
+~~* run Joy Node~~
 ```ch
 rosrun joy joy_node
+```
+* roslaunch
+```ch
+roslaunch dyros_tocabi_joystick joystick.launch
 ```
   also, you can check topic with `rostopic list` and `rostopic echo /tocabi/...`
   <br></br>
@@ -54,10 +58,15 @@ rosrun joy joy_node
   1. ~~Joystick setup.~~ (2020/07/08)
   2. ~~Generate dyros_tocabi_joystick Node that publish WalkingCommand to DaegyuLim's Custom-Controller.~~ (2020/07/09)
   3. ~~Control walking speed with joystick.~~ (2020/07/10)
-  4. Make launch file (mujoco + Custum-Controller + tocabi_gui + joy + dyros_tocabi_joystick)
+  4. ~~Make launch file (joy + dyros_tocabi_joystick)~~ (2020/07/13)
   5. Processing Joy message <br>
-&nbsp; _add message(Duration, Angle velocity, Knee Angle, Foot Height) publishing code <br>
+&nbsp; ~~_add message(Angle velocity) publishing code~~_ (2020/07/13) <br>
+&nbsp; ~~implement moving average filter(with filling array[100] <= using Circular Queue)~~_(2020/07/13)
+&nbsp; _add message(Duration,  Knee Angle, Foot Height) publishing code <br>
 &nbsp; convert continuous value into discrete value <br>
-&nbsp; if value change, run publish code <br>
-&nbsp; implement moving average filter(using with filling array[100])_
-  6. etc., more discussion and problem will arise.
+&nbsp; joystick key setting(need to discuss)_(2020/07/13)
+  6. Make Integrate launch file {(mujoco + Custum-Controller + tocabi_gui} + {joy + dyros_tocabi_joystick})
+  7. Processing Publish Timing
+&nbsp; _if value change, run publish code <br>
+&nbsp; Queues in moving average filters must be updated at the same time interval_<br>
+  8. etc., more discussion and problem will arise.
