@@ -41,10 +41,10 @@ rostopic echo joy
 * Enable mujoco
 * in tocabi_gui > COMMAND > Mode > Select '13.CustomController 4 > Click 'SEND' <br>
 
-~~run Joystick
-rosrun dyros_tocabi_joystick dyros_tocabi_joystick
-run Joy Node
-rosrun joy joy_node~~
+~~run Joystick<br>
+rosrun dyros_tocabi_joystick dyros_tocabi_joystick<br>
+run Joy Node<br>
+rosrun joy joy_node~~ (launch file made)
 
 * roslaunch
 ```ch
