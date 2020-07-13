@@ -39,15 +39,13 @@ rostopic echo joy
 ## How do I run dyros_tocabi_joystick ? ##
 * Launch DaegyuLim's Custom-Controller (https://github.com/DaegyuLim/Custom-Controller)
 * Enable mujoco
-* in tocabi_gui > COMMAND > Mode > Select '13.CustomController 4 > Click 'SEND'
-~~* run Joystick~~
-```ch
+* in tocabi_gui > COMMAND > Mode > Select '13.CustomController 4 > Click 'SEND' <br>
+
+~~run Joystick
 rosrun dyros_tocabi_joystick dyros_tocabi_joystick
-```
-~~* run Joy Node~~
-```ch
-rosrun joy joy_node
-```
+run Joy Node
+rosrun joy joy_node~~
+
 * roslaunch
 ```ch
 roslaunch dyros_tocabi_joystick joystick.launch
