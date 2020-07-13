@@ -8,11 +8,35 @@
 #include <sensor_msgs/Joy.h>
     
 #include <cmath>
+#include <queue>
+
+class MovAvgFilter //CircularQueue
+{
+public:
+     MovAvgFilter(int size);
+     void enqueue(double data);
+     int dequeue();
+     int getFront() const;
+     int getBack() const;
+     int getSize() const;
+     bool isEmpty() const;
+     bool isFull() const;
+
+     int capacity;
+     double* cq;
+private:
+     int front;
+     int back;
+};
+
 
 class TocabiJoystick
 {
 public:
-     TocabiJoystick();
+     TocabiJoystick(int size_);
+
+     MovAvgFilter speed_MAF;
+     MovAvgFilter angvel_MAF;
 
      virtual void walkingspeedcb(double value);
      virtual void walkingdurationcb(int value);
@@ -42,9 +66,11 @@ private:
      bool walk_cmd_pre_;
 
      double speed_value;
+     double angle_value;
+
 };
  
 
- int main(int argc, char** argv);
+int main(int argc, char** argv);
 
 #endif

@@ -1,0 +1,9 @@
+<launch>
+  <node name="joy_node" pkg="joy" type="joy_node" respawn="true">
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0.12" />
+  </node>
+
+  <node name="dyros_tocabi_joystick" pkg ="dyros_tocabi_joystick" type="dyros_tocabi_joystick" respawn="true" output="screen">
+  </node>
+</launch>

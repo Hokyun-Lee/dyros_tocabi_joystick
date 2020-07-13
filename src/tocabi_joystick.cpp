@@ -1,6 +1,6 @@
 #include "../include/dyros_tocabi_joystick/tocabi_joystick.h"
 
-TocabiJoystick::TocabiJoystick()
+TocabiJoystick::TocabiJoystick(int size_) : speed_MAF(size_), angvel_MAF(size_)
 {
     joy_sub_ = nh_.subscribe<sensor_msgs::Joy>("joy", 10, &TocabiJoystick::joyCallback, this);
     
@@ -12,8 +12,7 @@ TocabiJoystick::TocabiJoystick()
     walkingangvel_pub = nh_.advertise<std_msgs::Float32>("/tocabi/walkingangvelcommand", 100);
     kneetargetangle_pub = nh_.advertise<std_msgs::Float32>("/tocabi/kneetargetanglecommand", 100);
     footheight_pub = nh_.advertise<std_msgs::Float32>("/tocabi/footheightcommand", 100);
-
-    speed_value = 0;
+    // speed_value = 0;
 }
 
 void TocabiJoystick::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
@@ -28,7 +27,7 @@ void TocabiJoystick::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     // // float value_round = 0.0;
     // // value_round = joy->axes[0];
     // // value_round += + 0.005;
-    // // value_round = (int)(value_round*100);
+    // // value_round = (int)(value10_round*100);
     // // value_round = value_round/100;
 
     // twist.linear.x = roundf((joy->axes[0])*100);
@@ -76,38 +75,42 @@ void TocabiJoystick::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     // }
     // else{
     //     walk_cmd_ = false;
-    // }
-    
-    // if(walk_cmd_){
-    //     if(walk_cmd_ != walk_cmd_pre_)
-    //         walkingspeedcb(speed_value);
-    // }
+    // }r::Mo
     // walk_cmd_pre_ = walk_cmd_;
 
-    speed_value = round(joy->axes[1]*100); //조이스틱 값을 100배하여 반올림을해 정수형으로 만들어줌
-    if(speed_value >= -4 && speed_value <= 6){
-        walkingspeed_msg.data = speed_value/100;
-        walkingspeed_pub.publish(walkingspeed_msg);
+    // speed_value = round(joy->axes[1]*100); //조이스틱 값을 100배하여 반올림을해 정수형으로 만들어줌
+    // if(speed_value >= -40 && speed_value <= 60){
+    //     walkingspeed_msg.data = speed_value/100;
+    //     walkingspeed_pub.publish(walkingspeed_msg);
+    // }
+
+    // angle_value = round(joy->axes[0]*100); //조이스틱 값을 100배하여 반올림을해 정수형으로 만들어줌
+    // if(angle_value >= -100 && angle_value <= 100){
+    //     walkingangvel_msg.data = -1 * angle_value/100;
+    //     walkingangvel_pub.publish(walkingangvel_msg);
+    // }
+    
+    walkingspeed_msg.data = joy->axes[1];
+    speed_MAF.enqueue(walkingspeed_msg.data);
+    float speed_avg = 0;
+    for(int i = 0; i < speed_MAF.capacity; i++){
+        speed_avg += speed_MAF.cq[i];
     }
-    
+    walkingspeed_msg.data = speed_avg/speed_MAF.capacity;
+    walkingspeed_pub.publish(walkingspeed_msg);
 
+    walkingangvel_msg.data = -1 * joy->axes[0];
+    angvel_MAF.enqueue(walkingangvel_msg.data);
+    float angvel_avg = 0;
+    for(int i = 0; i < angvel_MAF.capacity; i++){
+        angvel_avg += angvel_MAF.cq[i];
+    }
+    walkingangvel_msg.data = angvel_avg/angvel_MAF.capacity;
+    walkingangvel_pub.publish(walkingangvel_msg);
+
+    std::cout << "walking speed: " << walkingspeed_msg.data << std::endl;
+    std::cout << "angle velocity: " << walkingangvel_msg.data << std::endl << std::endl;
 }
-
-// void TocabiJoystick::walkingspeedcb(double value)
-// {
-//     double max_speed = 0.6;
-//     double min_speed = 0.4;
-//     double scale = value;
-    
-//     if(scale >= 0){
-//         walkingspeed_msg.data = scale*max_speed;
-//     }
-//     else{
-//         walkingspeed_msg.data = scale*min_speed;
-//     }
-//     joy_command_pub_.publish(walkingspeed_msg);
-//     walkingspeed_pub.publish(walkingspeed_msg);
-// }
 
 void TocabiJoystick::walkingspeedcb(double value)
 {
@@ -116,10 +119,10 @@ void TocabiJoystick::walkingspeedcb(double value)
     double scale = value;
     
     if(scale >= 0){
-        walkingspeed_msg.data = scale*max_speed/10;
+        walkingspeed_msg.data = scale*max_speed;
     }
     else{
-        walkingspeed_msg.data = scale*min_speed/10;
+        walkingspeed_msg.data = scale*min_speed;
     }
     joy_command_pub_.publish(walkingspeed_msg);
     walkingspeed_pub.publish(walkingspeed_msg);
@@ -127,12 +130,7 @@ void TocabiJoystick::walkingspeedcb(double value)
 
 void TocabiJoystick::walkingdurationcb(int value)
 {
-    double max_duration = 1;
-    double min_duration = 0.2;
-    double scale = value;
 
-    walkingduration_msg.data = scale/100*(max_duration - min_duration) + min_duration;
-    walkingduration_pub.publish(walkingduration_msg);
 }
 
 void TocabiJoystick::walkingangvelcb(int value)
@@ -165,15 +163,82 @@ void TocabiJoystick::footheightcb(int value)
     footheight_pub.publish(footheight_msg);
 }
 
+MovAvgFilter::MovAvgFilter(int size):front(0), back(0), capacity(size)
+{
+    cq = new double[size + 1]; //더미노드까지 포함하여 포인터를 생성함
+    for(int i = 0; i < size; i++){
+        enqueue(0);
+    }
+}
 
+void MovAvgFilter::enqueue(double data)
+{
+    int pos;
+    // back이 마지막 인덱스에 채우는 경우
+    // back은 계속 순환하니까 0으로 초기화
+    // 마지막엔 pos로 담는다.
+    if (back == capacity-1){
+        pos = back;
+        cq[pos] = data;
+        back = 0;
+    }
+    else
+        cq[back++] = data;
+}
+
+int MovAvgFilter::dequeue()
+{
+    int pos = front;
+    // front가 마지막 인덱스의 데이터를 제거하는 경우
+    // front도 순환하므로 0으로 초기화
+    // 리턴은 pos로 한다.
+    if (front == capacity - 1) front = 0;
+    else front++;
+    return cq[pos];
+}
+
+int MovAvgFilter::getFront() const
+{
+    return cq[front];
+}
+ 
+int MovAvgFilter::getBack() const
+{
+    // back은 enqueue에서 증가하므로 -1 해서 접근해야 함
+    return cq[back-1];
+}
+ 
+bool MovAvgFilter::isEmpty() const
+{
+    return front == back;
+}
+
+int MovAvgFilter::getSize() const
+{
+    // front가 back보다 작거나 같은경우
+    if (front <= back) return back - front;
+    // front가 back보다 큰 경우는 
+    // back이 다시 돌아오고 front가 진행하는 경우이다.
+    else if (front > back) return capacity - front + back;
+}
+
+bool MovAvgFilter::isFull() const
+{
+    // front가 back보다 작으면 back이 더미 바로 전에 있어야 함
+    if (front <= back) return back - front == capacity - 1;
+    // front가 back보다 크면 back이 front 바로 전에 있어야 함
+    else return back + 1 == front;
+}
 
 
 int main(int argc, char** argv)
 {
     std::cout << "Started~~"<<std::endl;
     ros::init(argc, argv, "dyros_tocabi_joystick");
-    TocabiJoystick tocabijoystick;
+    int capacity = 100;
+    TocabiJoystick tocabijoystick(capacity);
     std::cout << "Dyros Tocabi Joystick Controller Started"<<std::endl;
+
     while(ros::ok())
     {
         ros::spinOnce();
