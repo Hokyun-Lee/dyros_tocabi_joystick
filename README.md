@@ -61,7 +61,7 @@ roslaunch dyros_tocabi_joystick joystick.launch
   4. ~~Make launch file (joy + dyros_tocabi_joystick)~~ (2020/07/13)
   5. Processing Joy message <br>
 &nbsp; ~~_add message(Angle velocity) publishing code~~_ (2020/07/13) <br>
-&nbsp; ~~implement moving average filter(with filling array[100] <= using Circular Queue)~~_(2020/07/13)
+&nbsp; ~~implement moving average filter(with filling array[100] <= using Circular Queue)~~_(2020/07/13) <br>
 &nbsp; _add message(Duration,  Knee Angle, Foot Height) publishing code <br>
 &nbsp; convert continuous value into discrete value <br>
 &nbsp; joystick key setting(need to discuss)_(2020/07/13)
