@@ -23,6 +23,11 @@ ls -1 /dev/input/jsX
 sudo chmod a+rw /dev/input/jsX
 ```
 
+* test joystick
+```sh
+sudo jstest /dev/input/jsX
+```
+
 * Starting the joy Node
 ```sh
 roscore
