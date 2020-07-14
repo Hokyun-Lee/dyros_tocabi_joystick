@@ -1,6 +1,6 @@
 #include "../include/dyros_tocabi_joystick/tocabi_joystick.h"
 
-TocabiJoystick::TocabiJoystick(int size_) : speed_MAF(size_), angvel_MAF(size_)
+TocabiJoystick::TocabiJoystick(int size_) : speed_MAF(size_), angvel_MAF(30)
 {
     joy_sub_ = nh_.subscribe<sensor_msgs::Joy>("joy", 10, &TocabiJoystick::joyCallback, this);
     
@@ -13,6 +13,8 @@ TocabiJoystick::TocabiJoystick(int size_) : speed_MAF(size_), angvel_MAF(size_)
     kneetargetangle_pub = nh_.advertise<std_msgs::Float32>("/tocabi/kneetargetanglecommand", 100);
     footheight_pub = nh_.advertise<std_msgs::Float32>("/tocabi/footheightcommand", 100);
     // speed_value = 0;
+
+    mode = 0; //default : 0
 }
 
 void TocabiJoystick::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
@@ -91,25 +93,77 @@ void TocabiJoystick::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     // }
     
     walkingspeed_msg.data = joy->axes[1];
+    double max_speed = 0.6;
+    double min_speed = -0.4;
+    if(walkingspeed_msg.data > max_speed){
+        walkingspeed_msg.data = max_speed;
+    }
+    else if(walkingspeed_msg.data < min_speed){
+        walkingspeed_msg.data = min_speed;
+    }
     speed_MAF.enqueue(walkingspeed_msg.data);
     float speed_avg = 0;
+    std::cout << "speed queue : ";
+    std::cout.precision(5);
     for(int i = 0; i < speed_MAF.capacity; i++){
+        if(i % 10 == 0)
+            std::cout << std::endl;
+        std::cout << speed_MAF.cq[i] << " ";
         speed_avg += speed_MAF.cq[i];
     }
+    std::cout << std::endl << std::endl;
     walkingspeed_msg.data = speed_avg/speed_MAF.capacity;
     walkingspeed_pub.publish(walkingspeed_msg);
 
-    walkingangvel_msg.data = -1 * joy->axes[0];
+    walkingangvel_msg.data = -1 * joy->axes[3];
+    double max_angvel = 0.5;
+    double min_angvel = -0.5;
+    if(walkingangvel_msg.data > max_angvel){
+        walkingangvel_msg.data = max_angvel;
+    }
+    else if(walkingangvel_msg.data < min_angvel){
+        walkingangvel_msg.data = min_angvel;
+    }
     angvel_MAF.enqueue(walkingangvel_msg.data);
     float angvel_avg = 0;
+    std::cout << "angvel queue : ";
+    std::cout.precision(5);
     for(int i = 0; i < angvel_MAF.capacity; i++){
+        if(i % 10 == 0)
+            std::cout << std::endl;
+        std::cout << angvel_MAF.cq[i] << " ";
         angvel_avg += angvel_MAF.cq[i];
     }
+    std::cout << std::endl << std::endl;
     walkingangvel_msg.data = angvel_avg/angvel_MAF.capacity;
     walkingangvel_pub.publish(walkingangvel_msg);
 
+    //walking speed와 angle velocity를 동시에 줄때 한계점(넘어지는 지점)이 존재함 ((처리 필요))
     std::cout << "walking speed: " << walkingspeed_msg.data << std::endl;
     std::cout << "angle velocity: " << walkingangvel_msg.data << std::endl << std::endl;
+
+    //modechange();
+    if(joy->buttons[0]){
+        mode = 0;
+        std::cout << "Now, mode is " << mode << std::endl;
+    }
+    else if(joy->buttons[1]){
+        mode = 1;
+        std::cout << "Now, mode is " << mode << std::endl;
+    }
+    else if(joy->buttons[2]){
+        mode = 2;
+        std::cout << "Now, mode is " << mode << std::endl;
+    }
+    else if(joy->buttons[3]){
+        mode = 3;
+        std::cout << "Now, mode is " << mode << std::endl;
+    }
+
+}
+
+void TocabiJoystick::modechange(){
+    
 }
 
 void TocabiJoystick::walkingspeedcb(double value)

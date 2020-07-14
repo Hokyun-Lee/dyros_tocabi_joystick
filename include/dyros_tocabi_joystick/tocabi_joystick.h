@@ -6,7 +6,7 @@
 #include <std_msgs/Float32.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Joy.h>
-    
+
 #include <cmath>
 #include <queue>
 
@@ -43,6 +43,8 @@ public:
      virtual void walkingangvelcb(int value);
      virtual void kneetargetanglecb(int value);
      virtual void footheightcb(int value);
+
+     void modechange();
      
 private:
      void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
@@ -67,6 +69,8 @@ private:
 
      double speed_value;
      double angle_value;
+
+     int mode;
 
 };
  
