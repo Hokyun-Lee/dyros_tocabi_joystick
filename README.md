@@ -65,7 +65,7 @@ roslaunch dyros_tocabi_joystick joystick.launch
   5. Processing Joy message <br>
 &nbsp; ~~add message(Angle velocity) publishing code~~ (2020/07/13) <br>
 &nbsp; ~~implement moving average filter(with filling array[100] <= using Circular Queue)~~(2020/07/13) <br>
-&nbsp; _add message(Duration,  Knee Angle, Foot Height) publishing code <br>
+&nbsp; _add message(Duration, Knee Angle, Foot Height) publishing code <br>
 &nbsp; convert continuous value into discrete value <br>
 &nbsp; joystick key setting(need to discuss)_(2020/07/13)
   6. Make Integrate launch file {(mujoco + Custum-Controller + tocabi_gui) + (joy + dyros_tocabi_joystick)}
