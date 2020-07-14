@@ -69,7 +69,7 @@ roslaunch dyros_tocabi_joystick joystick.launch
 &nbsp; convert continuous value into discrete value <br>
 &nbsp; joystick key setting(need to discuss)_(2020/07/13)
   6. Make Integrate launch file {(mujoco + Custum-Controller + tocabi_gui) + (joy + dyros_tocabi_joystick)}
-  7. Processing Publish Timing <br>
-&nbsp; ~~_if value change, run publish code~~_ auto repeat in 20 Hz (2020/07/14) <br>
-&nbsp; ~~_Queues in moving average filters must be updated at the same time interval_~~ coalesce interval has added(0.2s) (2020/07/14)<br>
+  7. ~~Processing Publish Timing~~ (2020/07/14) <br>
+&nbsp; ~~if value change, run publish code~~  auto repeat in 20 Hz <br>
+&nbsp; ~~Queues in moving average filters must be updated at the same time interval~~  coalesce interval has added(0.2s) <br>
   8. etc., more discussion and problem will arise.
