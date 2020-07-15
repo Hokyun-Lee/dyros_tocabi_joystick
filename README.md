@@ -5,7 +5,7 @@
 (http://wiki.ros.org/joy#Microsoft_Xbox_360_Wired_Controller_for_Linux)
 * in Ubuntu 16.04.6 LTS with ROS <br>
 
-<center><img src="https://user-images.githubusercontent.com/68094299/87521802-d0103e00-c6bf-11ea-868e-d85cf6993647.png" width="385" height="505"></center>
+<p align="center"><img src="https://user-images.githubusercontent.com/68094299/87521802-d0103e00-c6bf-11ea-868e-d85cf6993647.png" width="385" height="505">
 
 <br></br>
 ## Configuring Joystick ##
