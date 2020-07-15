@@ -59,6 +59,15 @@ roslaunch dyros_tocabi_joystick joystick.launch
 ```
   also, you can check topic with `rostopic list` and `rostopic echo /tocabi/...`
   <br></br>
+  
+## Mode Explain ##
+### Mode 0: ###
+
+### Mode 1: ###
+
+### Mode 2: ###
+
+<br></br>
   ## Todo list ##
   1. ~~Joystick setup.~~ (2020/07/08)
   2. ~~Generate dyros_tocabi_joystick Node that publish WalkingCommand to DaegyuLim's Custom-Controller.~~ (2020/07/09)
@@ -75,5 +84,5 @@ roslaunch dyros_tocabi_joystick joystick.launch
 &nbsp; ~~if value change, run publish code~~  <- auto repeat in 20 Hz <br>
 &nbsp; ~~Queues in moving average filters must be updated at the same time interval~~  <- coalesce interval has added(0.2s) <br>
   8. ~~Queue size can be change~~ (2020/07/15)
-  9. ~~Various Control Mode~~ Mode 0(button 0) ~ Mode 3(button 3) (2020/07/15)
+  9. ~~Various Control Mode~~ {Mode 0(button 0) ~ Mode 3(button 3)} (2020/07/15)
   10. etc., more discussion and problem will arise.
