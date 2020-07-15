@@ -1,6 +1,6 @@
 #include "../include/dyros_tocabi_joystick/tocabi_joystick.h"
 
-TocabiJoystick::TocabiJoystick(int size_) : speed_MAF(size_), angvel_MAF(30)
+TocabiJoystick::TocabiJoystick(int size_) : speed_MAF(size_), angvel_MAF(size_)
 {
     joy_sub_ = nh_.subscribe<sensor_msgs::Joy>("joy", 10, &TocabiJoystick::joyCallback, this);
     
@@ -14,6 +14,9 @@ TocabiJoystick::TocabiJoystick(int size_) : speed_MAF(size_), angvel_MAF(30)
     footheight_pub = nh_.advertise<std_msgs::Float32>("/tocabi/footheightcommand", 100);
     // speed_value = 0;
 
+    walkingduration_msg.data = 0.6;
+    kneetargetangle_msg.data = 0.1;
+    footheight_msg.data = 0.05;
     mode = 0; //default : 0
 }
 
@@ -39,7 +42,7 @@ void TocabiJoystick::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     // // twist.linear.y = joy->axes[1];
     // joy_command_pub_.publish(twist);
 
-    // //반올림, 이전 메세지 저장 구현이 어렵다 ㅠ
+    // //반올림, 이전 메세지 저장
 
     // std_msgs::Float32 joy_axis_1;
     // std_msgs::Float32 joy_axis_2;
@@ -91,75 +94,274 @@ void TocabiJoystick::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     //     walkingangvel_msg.data = -1 * angle_value/100;
     //     walkingangvel_pub.publish(walkingangvel_msg);
     // }
-    
-    walkingspeed_msg.data = joy->axes[1];
-    double max_speed = 0.6;
-    double min_speed = -0.4;
-    if(walkingspeed_msg.data > max_speed){
-        walkingspeed_msg.data = max_speed;
-    }
-    else if(walkingspeed_msg.data < min_speed){
-        walkingspeed_msg.data = min_speed;
-    }
-    speed_MAF.enqueue(walkingspeed_msg.data);
-    float speed_avg = 0;
-    std::cout << "speed queue : ";
-    std::cout.precision(5);
-    for(int i = 0; i < speed_MAF.capacity; i++){
-        if(i % 10 == 0)
-            std::cout << std::endl;
-        std::cout << speed_MAF.cq[i] << " ";
-        speed_avg += speed_MAF.cq[i];
-    }
-    std::cout << std::endl << std::endl;
-    walkingspeed_msg.data = speed_avg/speed_MAF.capacity;
-    walkingspeed_pub.publish(walkingspeed_msg);
-
-    walkingangvel_msg.data = -1 * joy->axes[3];
-    double max_angvel = 0.5;
-    double min_angvel = -0.5;
-    if(walkingangvel_msg.data > max_angvel){
-        walkingangvel_msg.data = max_angvel;
-    }
-    else if(walkingangvel_msg.data < min_angvel){
-        walkingangvel_msg.data = min_angvel;
-    }
-    angvel_MAF.enqueue(walkingangvel_msg.data);
-    float angvel_avg = 0;
-    std::cout << "angvel queue : ";
-    std::cout.precision(5);
-    for(int i = 0; i < angvel_MAF.capacity; i++){
-        if(i % 10 == 0)
-            std::cout << std::endl;
-        std::cout << angvel_MAF.cq[i] << " ";
-        angvel_avg += angvel_MAF.cq[i];
-    }
-    std::cout << std::endl << std::endl;
-    walkingangvel_msg.data = angvel_avg/angvel_MAF.capacity;
-    walkingangvel_pub.publish(walkingangvel_msg);
-
-    //walking speed와 angle velocity를 동시에 줄때 한계점(넘어지는 지점)이 존재함 ((처리 필요))
-    std::cout << "walking speed: " << walkingspeed_msg.data << std::endl;
-    std::cout << "angle velocity: " << walkingangvel_msg.data << std::endl << std::endl;
 
     //modechange();
     if(joy->buttons[0]){
         mode = 0;
-        std::cout << "Now, mode is " << mode << std::endl;
     }
     else if(joy->buttons[1]){
         mode = 1;
-        std::cout << "Now, mode is " << mode << std::endl;
     }
     else if(joy->buttons[2]){
         mode = 2;
-        std::cout << "Now, mode is " << mode << std::endl;
     }
     else if(joy->buttons[3]){
         mode = 3;
-        std::cout << "Now, mode is " << mode << std::endl;
+    }
+    std::cout << "Now, Interface Mode : " << mode << std::endl << std::endl;
+
+    if(joy->buttons[8] == 1){ //msg initialize
+        walkingduration_msg.data = 0.6;
+        kneetargetangle_msg.data = 0.1;
+        footheight_msg.data = 0.05;
+        
+        walkingduration_pub.publish(walkingduration_msg);
+        kneetargetangle_pub.publish(kneetargetangle_msg);
+        footheight_pub.publish(footheight_msg);
     }
 
+    if(joy->buttons[7] == 1 && walkingduration_msg.data < max_duration){
+        walkingduration_msg.data += (max_duration)/40;
+        if(walkingduration_msg.data > max_duration)
+            walkingduration_msg.data = max_duration;
+        walkingduration_pub.publish(walkingduration_msg);
+    }
+    else if(joy->buttons[6] == 1 && walkingduration_msg.data > min_duration){
+        walkingduration_msg.data -= (max_duration)/40;
+        if(walkingduration_msg.data < min_duration)
+            walkingduration_msg.data = min_duration;
+        walkingduration_pub.publish(walkingduration_msg);
+    }
+
+    std::cout << "Walking Duration: " << walkingduration_msg.data << std::endl;
+
+    if(joy->axes[6] != 0){
+        if(joy->axes[6] == -1 && kneetargetangle_msg.data < max_kneeangle){
+            kneetargetangle_msg.data += (max_kneeangle)/45; // (pi/2)/45 = 2 deg
+            if(kneetargetangle_msg.data > max_kneeangle)
+                kneetargetangle_msg.data = max_kneeangle;
+        }
+        else if(joy->axes[6] == 1 && kneetargetangle_msg.data > 0){
+            kneetargetangle_msg.data -= (max_kneeangle)/45;
+            if(kneetargetangle_msg.data < 0)
+                kneetargetangle_msg.data = 0;
+        }
+        kneetargetangle_pub.publish(kneetargetangle_msg);
+    }
+    
+    std::cout << "Knee Target angle[rad]: " << kneetargetangle_msg.data << std::endl;
+
+    if(joy->axes[7] != 0){
+        if(joy->axes[7] == 1 && footheight_msg.data < max_footheight){
+            footheight_msg.data += (max_footheight)/20;
+            if(footheight_msg.data > max_footheight)
+                footheight_msg.data = max_footheight;
+        }
+        else if(joy->axes[7] == -1 && footheight_msg.data > min_footheight){
+            footheight_msg.data -= (max_footheight)/20;
+            if(footheight_msg.data < min_footheight)
+                footheight_msg.data = min_footheight;
+        }
+        footheight_pub.publish(footheight_msg);
+    }
+    
+    std::cout << "Foot Height[cm]: " << footheight_msg.data << std::endl << std::endl;
+
+    if(mode == 0){
+        walkingspeed_msg.data = (joy->axes[1])*speed_scale;
+        if(walkingspeed_msg.data > max_speed){
+            walkingspeed_msg.data = max_speed;
+        }
+        else if(walkingspeed_msg.data < min_speed){
+            walkingspeed_msg.data = min_speed;
+        }
+        speed_MAF.enqueue(walkingspeed_msg.data);
+        float speed_avg = 0;
+        std::cout << "speed queue : ";
+        std::cout.precision(5);
+        for(int i = 0; i < speed_MAF.capacity; i++){
+            if(i % 10 == 0)
+                std::cout << std::endl;
+            std::cout << speed_MAF.cq[i] << " ";
+            speed_avg += speed_MAF.cq[i];
+        }
+        std::cout << std::endl << std::endl;
+        walkingspeed_msg.data = speed_avg/speed_MAF.capacity;
+        walkingspeed_pub.publish(walkingspeed_msg);
+
+        walkingangvel_msg.data = -1 * joy->axes[3];
+
+        if(walkingangvel_msg.data > max_angvel){
+            walkingangvel_msg.data = max_angvel;
+        }
+        else if(walkingangvel_msg.data < min_angvel){
+            walkingangvel_msg.data = min_angvel;
+        }
+        angvel_MAF.enqueue(walkingangvel_msg.data);
+        float angvel_avg = 0;
+        std::cout << "angvel queue : ";
+        std::cout.precision(5);
+        for(int i = 0; i < angvel_MAF.capacity; i++){
+            if(i % 10 == 0)
+                std::cout << std::endl;
+            std::cout << angvel_MAF.cq[i] << " ";
+            angvel_avg += angvel_MAF.cq[i];
+        }
+        std::cout << std::endl << std::endl;
+        walkingangvel_msg.data = angvel_avg/angvel_MAF.capacity;
+        walkingangvel_pub.publish(walkingangvel_msg);
+
+        //walking speed와 angle velocity를 동시에 줄때 한계점(넘어지는 지점)이 존재함 ((처리 필요))
+        std::cout << "walking speed: " << walkingspeed_msg.data << std::endl;
+        std::cout << "angle velocity: " << walkingangvel_msg.data << std::endl << std::endl;
+    }
+    else if(mode == 1){
+        walkingspeed_msg.data = (joy->axes[1])*speed_scale;
+        if(walkingspeed_msg.data > max_speed){
+            walkingspeed_msg.data = max_speed;
+        }
+        else if(walkingspeed_msg.data < min_speed){
+            walkingspeed_msg.data = min_speed;
+        }
+        speed_MAF.enqueue(walkingspeed_msg.data);
+        float speed_avg = 0;
+        std::cout << "speed queue : ";
+        std::cout.precision(5);
+        for(int i = 0; i < speed_MAF.capacity; i++){
+            if(i % 10 == 0)
+                std::cout << std::endl;
+            std::cout << speed_MAF.cq[i] << " ";
+            speed_avg += speed_MAF.cq[i];
+        }
+        std::cout << std::endl << std::endl;
+        walkingspeed_msg.data = speed_avg/speed_MAF.capacity;
+        walkingspeed_pub.publish(walkingspeed_msg);
+
+        double axes_2 = 0;
+        double axes_5 = 0;
+        axes_2 = (joy->axes[2] + 1)/2;
+        axes_5 = (joy->axes[5] + 1)/2;
+
+        walkingangvel_msg.data = (axes_2 - axes_5)*angvel_scale;
+        // double max_angvel = 0.5;
+        // double min_angvel = -0.5;
+        // if(walkingangvel_msg.data > max_angvel){
+        //     walkingangvel_msg.data = max_angvel;
+        // }
+        // else if(walkingangvel_msg.data < min_angvel){
+        //     walkingangvel_msg.data = min_angvel;
+        // }
+        angvel_MAF.enqueue(walkingangvel_msg.data);
+        float angvel_avg = 0;
+        std::cout << "angvel queue : ";
+        std::cout.precision(5);
+        for(int i = 0; i < angvel_MAF.capacity; i++){
+            if(i % 10 == 0)
+                std::cout << std::endl;
+            std::cout << angvel_MAF.cq[i] << " ";
+            angvel_avg += angvel_MAF.cq[i];
+        }
+        std::cout << std::endl << std::endl;
+        walkingangvel_msg.data = angvel_avg/angvel_MAF.capacity;
+        walkingangvel_pub.publish(walkingangvel_msg);
+
+        //walking speed와 angle velocity를 동시에 줄때 한계점(넘어지는 지점)이 존재함 ((처리 필요))
+        std::cout << "walking speed: " << walkingspeed_msg.data << std::endl;
+        std::cout << "angle velocity: " << walkingangvel_msg.data << std::endl << std::endl;
+    }
+    else if(mode == 2){
+        double axes_2 = 0;
+        double axes_5 = 0;
+        axes_2 = (joy->axes[2] + 1)/2; //scaling [-1,1] into [0,1]
+        axes_5 = (joy->axes[5] + 1)/2;
+
+        walkingspeed_msg.data = 0.6 - sqrt(axes_2*axes_2 + axes_5*axes_5)/sqrt(2)*speed_scale;
+        if(walkingspeed_msg.data > max_speed){
+            walkingspeed_msg.data = max_speed;
+        }
+        else if(walkingspeed_msg.data < 0){
+            walkingspeed_msg.data = 0;
+        }
+        speed_MAF.enqueue(walkingspeed_msg.data);
+        float speed_avg = 0;
+        std::cout << "speed queue : ";
+        std::cout.precision(5);
+        for(int i = 0; i < speed_MAF.capacity; i++){
+            if(i % 10 == 0)
+                std::cout << std::endl;
+            std::cout << speed_MAF.cq[i] << " ";
+            speed_avg += speed_MAF.cq[i];
+        }
+        std::cout << std::endl << std::endl;
+        walkingspeed_msg.data = speed_avg/speed_MAF.capacity;
+        walkingspeed_pub.publish(walkingspeed_msg);
+
+        walkingangvel_msg.data = (axes_2 - axes_5)*angvel_scale;
+        angvel_MAF.enqueue(walkingangvel_msg.data);
+        float angvel_avg = 0;
+        std::cout << "angvel queue : ";
+        std::cout.precision(5);
+        for(int i = 0; i < angvel_MAF.capacity; i++){
+            if(i % 10 == 0)
+                std::cout << std::endl;
+            std::cout << angvel_MAF.cq[i] << " ";
+            angvel_avg += angvel_MAF.cq[i];
+        }
+        std::cout << std::endl << std::endl;
+        walkingangvel_msg.data = angvel_avg/angvel_MAF.capacity;
+        walkingangvel_pub.publish(walkingangvel_msg);
+
+        //walking speed와 angle velocity를 동시에 줄때 한계점(넘어지는 지점)이 존재함 ((처리 필요))
+        std::cout << "walking speed: " << walkingspeed_msg.data << std::endl;
+        std::cout << "angle velocity: " << walkingangvel_msg.data << std::endl << std::endl;
+    }
+    else if(mode == 3){
+        double axes_2 = 0;
+        double axes_5 = 0;
+        axes_2 = (joy->axes[2] + 1)/2; //scaling [-1,1] into [0,1]
+        axes_5 = (joy->axes[5] + 1)/2;
+        double speed_scale_backward = 0.4;
+        walkingspeed_msg.data = -0.4 + sqrt(axes_2*axes_2 + axes_5*axes_5)/sqrt(2)*speed_scale_backward;
+        if(walkingspeed_msg.data > 0){
+            walkingspeed_msg.data = 0;
+        }
+        else if(walkingspeed_msg.data < min_speed){
+            walkingspeed_msg.data = min_speed;
+        }
+        speed_MAF.enqueue(walkingspeed_msg.data);
+        float speed_avg = 0;
+        std::cout << "speed queue : ";
+        std::cout.precision(5);
+        for(int i = 0; i < speed_MAF.capacity; i++){
+            if(i % 10 == 0)
+                std::cout << std::endl;
+            std::cout << speed_MAF.cq[i] << " ";
+            speed_avg += speed_MAF.cq[i];
+        }
+        std::cout << std::endl << std::endl;
+        walkingspeed_msg.data = speed_avg/speed_MAF.capacity;
+        walkingspeed_pub.publish(walkingspeed_msg);
+
+        walkingangvel_msg.data = (axes_2 - axes_5)*angvel_scale;
+        angvel_MAF.enqueue(walkingangvel_msg.data);
+        float angvel_avg = 0;
+        std::cout << "angvel queue : ";
+        std::cout.precision(5);
+        for(int i = 0; i < angvel_MAF.capacity; i++){
+            if(i % 10 == 0)
+                std::cout << std::endl;
+            std::cout << angvel_MAF.cq[i] << " ";
+            angvel_avg += angvel_MAF.cq[i];
+        }
+        std::cout << std::endl << std::endl;
+        walkingangvel_msg.data = angvel_avg/angvel_MAF.capacity;
+        walkingangvel_pub.publish(walkingangvel_msg);
+
+        //walking speed와 angle velocity를 동시에 줄때 한계점(넘어지는 지점)이 존재함 ((처리 필요))
+        std::cout << "walking speed: " << walkingspeed_msg.data << std::endl;
+        std::cout << "angle velocity: " << walkingangvel_msg.data << std::endl << std::endl;
+    }
+    std::cout << "------------------------------------" << std::endl << std::endl;
 }
 
 void TocabiJoystick::modechange(){
@@ -168,8 +370,6 @@ void TocabiJoystick::modechange(){
 
 void TocabiJoystick::walkingspeedcb(double value)
 {
-    double max_speed = 0.6;
-    double min_speed = 0.4;
     double scale = value;
     
     if(scale >= 0){
@@ -289,7 +489,7 @@ int main(int argc, char** argv)
 {
     std::cout << "Started~~"<<std::endl;
     ros::init(argc, argv, "dyros_tocabi_joystick");
-    int capacity = 100;
+    int capacity = 50;
     TocabiJoystick tocabijoystick(capacity);
     std::cout << "Dyros Tocabi Joystick Controller Started"<<std::endl;
 

@@ -64,13 +64,31 @@ private:
      ros::Publisher footheight_pub;
      std_msgs::Float32 footheight_msg;
 
+     int mode;
+
      bool walk_cmd_;
      bool walk_cmd_pre_;
 
      double speed_value;
      double angle_value;
 
-     int mode;
+     double max_speed = 0.6;
+     double min_speed = -0.4;
+
+     double max_angvel = 0.5;
+     double min_angvel = -0.5;
+
+     double max_kneeangle = 3.1416/2;
+
+     double max_duration = 1.0;
+     double min_duration = 0.2;
+
+     double max_footheight = 0.1;
+     double min_footheight = 0.01;
+
+     double speed_scale = 0.6;
+     double angvel_scale = 0.5;
+
 
 };
  
