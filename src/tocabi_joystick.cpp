@@ -22,80 +22,6 @@ TocabiJoystick::TocabiJoystick(int size_) : speed_MAF(size_), angvel_MAF(size_)
 
 void TocabiJoystick::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 {
-    // // std_msgs::Float64 float64;
-    // // float64 = joy->axes[0]; 
-    // // joy_command_pub_.publish(float64);
-    // // std::cout << float64 << std::endl;
-
-    // geometry_msgs::Twist twist;
-
-    // // float value_round = 0.0;
-    // // value_round = joy->axes[0];
-    // // value_round += + 0.005;
-    // // value_round = (int)(value10_round*100);
-    // // value_round = value_round/100;
-
-    // twist.linear.x = roundf((joy->axes[0])*100);
-    // twist.linear.x = (int)(twist.linear.x);
-    // twist.linear.x /= 100;
-
-    // // twist.linear.y = joy->axes[1];
-    // joy_command_pub_.publish(twist);
-
-    // //반올림, 이전 메세지 저장
-
-    // std_msgs::Float32 joy_axis_1;
-    // std_msgs::Float32 joy_axis_2;
-    // std_msgs::Float32 joy_axis_5;
-    // joy_axis_1.data = 0;
-    // joy_axis_1.data = roundf((joy->axes[1]*100));
-    // joy_axis_1.data = (int)(joy_axis_1.data);
-    // joy_axis_1.data /= 100;
-
-    // joy_axis_2.data = 0;
-    // joy_axis_2.data = roundf((joy->axes[2]*100));
-    // joy_axis_2.data = (int)(joy_axis_2.data);
-    // joy_axis_2.data /= 100;
-
-    // joy_axis_5.data = 0;
-    // joy_axis_5.data = roundf((joy->axes[5]*100));
-    // joy_axis_5.data = (int)(joy_axis_5.data);
-    // joy_axis_5.data /= 100;
-    
-    // joy_command_pub_.publish(joy_axis_1);
-    
-    // // if(joy_axis_1 != walkingspeed_msg_pre.data){
-        
-    // //     walkingspeedcb(joy_axis_1);
-    // //     walkingspeed_msg_pre.data = walkingspeed_msg.data;
-    // // }
-
-    // if(joy->axes[7] == 1.0 && speed_value < 10 ){
-    //     walk_cmd_ = true;
-    //     speed_value++;
-    // }
-    // else if(joy->axes[7] == -1.0 && speed_value > -10){
-    //     walk_cmd_ = true;
-    //     speed_value--;
-    // }
-    // else{
-    //     walk_cmd_ = false;
-    // }r::Mo
-    // walk_cmd_pre_ = walk_cmd_;
-
-    // speed_value = round(joy->axes[1]*100); //조이스틱 값을 100배하여 반올림을해 정수형으로 만들어줌
-    // if(speed_value >= -40 && speed_value <= 60){
-    //     walkingspeed_msg.data = speed_value/100;
-    //     walkingspeed_pub.publish(walkingspeed_msg);
-    // }
-
-    // angle_value = round(joy->axes[0]*100); //조이스틱 값을 100배하여 반올림을해 정수형으로 만들어줌
-    // if(angle_value >= -100 && angle_value <= 100){
-    //     walkingangvel_msg.data = -1 * angle_value/100;
-    //     walkingangvel_pub.publish(walkingangvel_msg);
-    // }
-
-    //modechange();
     if(joy->buttons[0]){
         mode = 0;
     }
@@ -492,9 +418,10 @@ int main(int argc, char** argv)
     int capacity = 50;
     TocabiJoystick tocabijoystick(capacity);
     std::cout << "Dyros Tocabi Joystick Controller Started"<<std::endl;
-
+    ros::Rate rate(20);
     while(ros::ok())
     {
         ros::spinOnce();
+        rate.sleep();
     }
 }
