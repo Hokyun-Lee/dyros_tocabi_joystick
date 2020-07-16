@@ -62,26 +62,26 @@ roslaunch dyros_tocabi_joystick joystick.launch
   
 ## Mode Explain ##
 ### Mode Change ###
-> Mode 0 : bottons\[0] <br>
-> Mode 1 : bottons\[1] <br>
-> Mode 2 : bottons\[2] <br>
-> Mode 3 : bottons\[3] <br>
+&nbsp; Mode 0 : bottons\[0] <br>
+&nbsp; Mode 1 : bottons\[1] <br>
+&nbsp; Mode 2 : bottons\[2] <br>
+&nbsp; Mode 3 : bottons\[3] <br>
 ### Mode description ###
 **Mode 0**    
-> speed : axes\[1]    
-> angle value : axes\[4]     
+&nbsp; speed : axes\[1]    
+&nbsp; angle value : axes\[4]     
 **Mode 1**    
-> speed : axes\[1]    
-> angle value(left) : axes\[2]    
-> angle value(right) : axes\[5]    
+&nbsp; speed : axes\[1]    
+&nbsp; angle value(left) : axes\[2]    
+&nbsp; angle value(right) : axes\[5]    
 **Mode 2(forward)**    
-> speed : sqrt{angle value(left)^2 + angle value(right)^2}/sqrt{2}    
-> angle value(left) : axes\[2]    
-> angle value(right) : axes\[5]    
+&nbsp; speed : sqrt{angle value(left)^2 + angle value(right)^2}/sqrt{2}    
+&nbsp; angle value(left) : axes\[2]    
+&nbsp; angle value(right) : axes\[5]    
 **Mode 3(backward)**    
-> speed : - sqrt{angle value(left)^2 + angle value(right)^2}/sqrt{2}    
-> angle value(left) : axes\[2]    
-> angle value(right) : axes\[5]    
+&nbsp; speed : - sqrt{angle value(left)^2 + angle value(right)^2}/sqrt{2}    
+&nbsp; angle value(left) : axes\[2]    
+&nbsp; angle value(right) : axes\[5]    
 <br></br>
   ## Todo list ##
   1. ~~Joystick setup.~~ (2020/07/08)
