@@ -82,8 +82,9 @@ roslaunch dyros_tocabi_joystick joystick.launch
 &nbsp; speed : - sqrt{angle value(left)^2 + angle value(right)^2}/sqrt{2}    
 &nbsp; angle value(left) : axes\[2]    
 &nbsp; angle value(right) : axes\[5]    
-<br></br>
-  ## Todo list ##
+<br></br>    
+
+ ## Todo list ##
   1. ~~Joystick setup.~~ (2020/07/08)
   2. ~~Generate dyros_tocabi_joystick Node that publish WalkingCommand to DaegyuLim's Custom-Controller.~~ (2020/07/09)
   3. ~~Control walking speed with joystick.~~ (2020/07/10)
