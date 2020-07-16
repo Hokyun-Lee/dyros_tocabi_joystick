@@ -67,7 +67,7 @@ roslaunch dyros_tocabi_joystick joystick.launch
 > Mode 2 : bottons\[2] <br>
 > Mode 3 : bottons\[3] <br>
 ### Mode 0: ###
-speed : axes\[1]
+speed : axes\[1]    
 angle value : axes\[4]
 ### Mode 1: ###
 
