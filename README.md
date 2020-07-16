@@ -81,8 +81,7 @@ roslaunch dyros_tocabi_joystick joystick.launch
 - **Mode 3(backward)**    
 &nbsp; speed : - sqrt{angle value(left)^2 + angle value(right)^2}/sqrt{2}    
 &nbsp; angle value(left) : axes\[2]    
-&nbsp; angle value(right) : axes\[5]    
-<br></br>
+&nbsp; angle value(right) : axes\[5] <br></br>
 
  ## Todo list ##
   1. ~~Joystick setup.~~ (2020/07/08)
