@@ -5,8 +5,7 @@
 (http://wiki.ros.org/joy#Microsoft_Xbox_360_Wired_Controller_for_Linux)
 * in Ubuntu 16.04.6 LTS with ROS <br>
 * using Joy(ROS driver for a generic Linux joystick).
-<p align="center"><img src="https://user-images.githubusercontent.com/68094299/89493237-ac3ba600-d7ee-11ea-98a2-6833478e9727.png" width="385" height="505">
-<p align="center"><img src="https://user-images.githubusercontent.com/68094299/87521802-d0103e00-c6bf-11ea-868e-d85cf6993647.png" width="385" height="505">
+<p align="center"><img src="https://user-images.githubusercontent.com/68094299/89493237-ac3ba600-d7ee-11ea-98a2-6833478e9727.png" height='500'> <img src="https://user-images.githubusercontent.com/68094299/87521802-d0103e00-c6bf-11ea-868e-d85cf6993647.png" height="500">
 
 ## Configuring Joy ##
 1. Joy 패키지 설치
