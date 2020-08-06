@@ -8,8 +8,8 @@
 
 <p align="center"><img src="https://user-images.githubusercontent.com/68094299/87521802-d0103e00-c6bf-11ea-868e-d85cf6993647.png" width="385" height="505">
 
-## Configuring Joystick ##
-1. 조이스틱 패키지 설치
+## Configuring Joy ##
+1. Joy 패키지 설치
 ```sh
 sudo apt-get install ros-kinetic-joy
 ```
