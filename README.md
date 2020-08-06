@@ -1,6 +1,6 @@
 # DYROS TOCABI JOYSTICK!!!
 
-* This is a DYROS Tocabi Humanoid's joystick controller Repository
+* This is a DYROS Tocabi Humanoid's joystick control interface Repository
 * using Microsoft Xbox 360 Wired Controller for Linux
 (http://wiki.ros.org/joy#Microsoft_Xbox_360_Wired_Controller_for_Linux)
 * in Ubuntu 16.04.6 LTS with ROS <br>
